@@ -40,7 +40,7 @@ const Login = () => {
         if (formData.password === '' || formData.password === null) {
             validationErrors.password = "Password Required";
         } else if (formData.password.length < 8) {
-            validationErrors.password = "Password should containn atleast 8 characters";
+            validationErrors.password = "Password should contain atleast 8 characters";
         }
         setErrors(validationErrors);
 
@@ -52,10 +52,12 @@ const Login = () => {
                 const response = await userLogin(formData);
                 const userData = response.data;
                 const accessToken = userData.token;
+                const refreshToken = userData.refreshToken;
                 console.log(accessToken)
                
                 const cookies= new Cookies();
                 cookies.set("accessToken", accessToken);
+                cookies.set("refreshToken",refreshToken);
                 toast.success("User Logged In");
                 const newUser = {
                     userId: userData._id,
