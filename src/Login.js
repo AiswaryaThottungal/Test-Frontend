@@ -40,7 +40,7 @@ const Login = () => {
         if (formData.password === '' || formData.password === null) {
             validationErrors.password = "Password Required";
         } else if (formData.password.length < 8) {
-            validationErrors.password = "Password should contain atleast 8 characters";
+            validationErrors.password = "Password should containn atleast 8 characters";
         }
         setErrors(validationErrors);
 

@@ -39,12 +39,28 @@ const userInitialState = {
     const userLogin = async(userCredentials) => {
         console.log(userCredentials)
         const loginUrl = userAPI+'login';
-        try{
-            const response = await axios.post(loginUrl, userCredentials);
-            console.log(response.data)
-            return response;
-        }catch(error){
-            return error.response;
+        try {
+            const response = await axios.post(loginUrl, userCredentials,
+                {
+                    withCredentials: true
+                });
+                const userData = await response.data;
+                const accessToken = userData.token;
+                console.log(accessToken)            
+                cookies.set("accessToken", accessToken);            
+                const newUser = {
+                    userId: userData._id,
+                    firstName: userData.firstname,
+                    lastName: userData.firstname,
+                    email: userData.email,
+                    address: userData.address,
+                    wishlist: userData.wishlist
+                }
+                setAuthUser(newUser);
+                setIsLoggedIn(true);
+                return response.data;
+        } catch (error) {
+            throw new Error(error);
         }
     }
 
@@ -53,6 +69,8 @@ const userInitialState = {
             try{
                const response = await axios.get(userAPI + "logout");
                console.log(response.data)
+               setIsLoggedIn(false);
+               cookies.remove('accessToken',{ path: "/"});
             }catch(error){
                 return error.response; 
             }
@@ -190,17 +208,20 @@ const userInitialState = {
         // get new access token every 13 minutes( 13*60*1000 ms), since access token expires in 15 minutes
        
             setInterval ( () =>{
-                const url = userAPI.concat('refresh');           
-                const res= axios.get(url).then((response) => {                
-                    return response.data;
-                }).then((data) => {
-                    console.log(data.accessToken)
-                    cookies.set("accessToken", data.accessToken);
-                }).catch(error => console.log(error))
-            },780000);     
+                if(isLoggedIn){
+                    const url = userAPI.concat('refresh');           
+                    const res= axios.get(url).then((response) => {                
+                        return response.data;
+                    }).then((data) => {
+                        console.log(data.accessToken)
+                        cookies.set("accessToken", data.accessToken);
+                    }).catch(error => console.log(error))
+                }
+                
+            },50000);     
         
         
-    }, []);
+    }, [isLoggedIn]);
     
 
 
