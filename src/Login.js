@@ -50,15 +50,18 @@ const Login = () => {
                 
                 //document.getElementById("login-form").reset();
                 const response = await userLogin(formData);
-                const userData = response.data;
+                if(response){
+                    toast.success("User Logged In");
+                }
+                /* const userData = response.data;
                 const accessToken = userData.token;
                 const refreshToken = userData.refreshToken;
                 console.log(accessToken)
                
                 const cookies= new Cookies();
                 cookies.set("accessToken", accessToken);
-                cookies.set("refreshToken",refreshToken);
-                toast.success("User Logged In");
+               
+                
                 const newUser = {
                     userId: userData._id,
                     firstName: userData.firstname,
@@ -69,9 +72,7 @@ const Login = () => {
                 }
                 setAuthUser(newUser);
                
-                setIsLoggedIn(true);  
-                 
-            
+                setIsLoggedIn(true);   */
                 // get user cart from DB
                 let cart = await getUserCart();
                 console.log("Get User Cart")
